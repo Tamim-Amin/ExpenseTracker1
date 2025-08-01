@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">ExpenseTracker</string>
+    <string name="tea">Tea</string>
+    <string name="food">Food</string>
+    <string name="_2025_07_11">2025-07-11</string>
+    <string name="_5_50">$5.50</string>
+    <string name="delete">🗑 Delete</string>
 
     <string-array name="expense_categories">
         <item>Food</item>
