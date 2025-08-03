@@ -47,6 +47,37 @@ public class MainActivityTest {
         assertFalse("Negative expense amount should fail validation", isValid);
     }
 
+    // Test 5: assertEquals - User display name extraction
+    @Test
+    public void testUserDisplayNameExtraction() {
+        String displayName = getUserDisplayName(testUserEmail);
+        assertEquals("Display name should match expected", testDisplayName, displayName);
+    }
+
+    // Test 6: assertNotEquals - Different expense amounts
+    @Test
+    public void testDifferentExpenseAmounts() {
+        double amount1 = 25.99;
+        double amount2 = 30.50;
+        assertNotEquals("Different expense amounts should not be equal", amount1, amount2, 0.01);
+    }
+
+    // Test 7: assertSame - String literal identity for categories
+    @Test
+    public void testCategoryStringIdentity() {
+        String category1 = "Food";
+        String category2 = "Food";
+        assertSame("String literals should be same object", category1, category2);
+    }
+
+    // Test 8: assertNotSame - Different category objects
+    @Test
+    public void testDifferentCategoryObjects() {
+        String category1 = "Food";
+        String category2 = new String("Food");
+        assertNotSame("Different string objects should not be same", category1, category2);
+    }
+
 
 
     // Helper methods that mirror MainActivity functionality
