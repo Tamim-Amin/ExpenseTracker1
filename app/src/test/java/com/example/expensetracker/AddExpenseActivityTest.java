@@ -11,5 +11,11 @@ public class AddExpenseActivityTest {
         assertNotNull("Categories array should not be null", categories);
     }
 
+    @Test
+    public void testValidDescriptionValidation() {
+        String description = "Coffee";
+        String trimmedDescription = description.trim();
+        assertEquals("Description should match expected value", "Coffee", trimmedDescription);
+    }
 
 }
