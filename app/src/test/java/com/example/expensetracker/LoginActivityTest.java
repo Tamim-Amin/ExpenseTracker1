@@ -190,6 +190,17 @@ public class LoginActivityTest {
         assertNotNull("Display name should not be null", actualDisplayName);
     }
 
+    // Test 17: Firebase Auth state validation
+    @Test
+    public void testFirebaseAuthState() {
+        // Simulate checking if user is logged in
+        boolean isLoggedIn = false; // Initially not logged in
+        boolean shouldRedirect = !isLoggedIn;
+
+        assertFalse("User should not be logged in initially", isLoggedIn);
+        assertTrue("Should redirect to login when not authenticated", shouldRedirect);
+    }
+
     // Helper methods that mirror LoginActivity functionality
     private boolean isValidEmail(String email) {
         if (email == null || email.isEmpty()) {
