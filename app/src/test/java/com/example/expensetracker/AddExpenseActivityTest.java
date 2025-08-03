@@ -18,4 +18,19 @@ public class AddExpenseActivityTest {
         assertEquals("Description should match expected value", "Coffee", trimmedDescription);
     }
 
+    @Test
+    public void testEmptyDescriptionValidation() {
+        String description = "";
+        boolean isEmpty = description.trim().isEmpty();
+        assertTrue("Empty description should return true for isEmpty", isEmpty);
+    }
+
+    @Test
+    public void testValidDescriptionIsNotEmpty() {
+        String description = "Coffee and snacks";
+        boolean isEmpty = description.trim().isEmpty();
+        assertFalse("Valid description should return false for isEmpty", isEmpty);
+    }
+
+
 }
