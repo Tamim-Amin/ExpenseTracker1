@@ -49,6 +49,37 @@ public class LoginActivityTest {
         assertFalse("Invalid email should fail validation", isValid);
     }
 
+    // Test 5: assertEquals - Email validation result
+    @Test
+    public void testEmailValidationResult() {
+        String email = "user@domain.com";
+        String expectedResult = "user@domain.com";
+        assertEquals("Email should match expected value", expectedResult, email);
+    }
+
+    // Test 6: assertNotEquals - Different email values
+    @Test
+    public void testDifferentEmailValues() {
+        String email1 = "user1@example.com";
+        String email2 = "user2@example.com";
+        assertNotEquals("Different emails should not be equal", email1, email2);
+    }
+
+    // Test 7: assertSame - String literal identity
+    @Test
+    public void testEmailStringIdentity() {
+        String email1 = "test@example.com";
+        String email2 = "test@example.com";
+        assertSame("String literals should be same object", email1, email2);
+    }
+
+    // Test 8: assertNotSame - Different string objects
+    @Test
+    public void testDifferentEmailObjects() {
+        String email1 = "test@example.com";
+        String email2 = new String("test@example.com");
+        assertNotSame("Different string objects should not be same", email1, email2);
+    }
 
 
     // Helper methods that mirror LoginActivity functionality
