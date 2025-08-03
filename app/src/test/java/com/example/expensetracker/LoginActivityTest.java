@@ -2,8 +2,14 @@ package com.example.expensetracker;
 
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import android.util.Patterns;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class LoginActivityTest {
 
@@ -246,4 +252,31 @@ public class LoginActivityTest {
         }
         return "User";
     }
+    //Test 18
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "user@example.com",
+            "test.user@domain.co",
+            "hello+world@myapp.io"
+    })
+    void testValidEmailsWithValueSource(String email) {
+        assertTrue("Email should be valid: " + email, isValidEmail(email));
+    }
+
+    //Test 19
+    @ParameterizedTest
+    @CsvSource({
+            "user@example.com,password123,true",
+            "bademail,password123,false",
+            "user@example.com,123,false",
+            "'',password123,false",
+            "user@example.com,'',false"
+    })
+    void testLoginValidationWithCsvSource(String email, String password, boolean expected) {
+        boolean actual = validateLoginCredentials(email, password);
+        assertEquals(expected, actual,
+                () -> "Expected validation result for email=" + email + ", password=" + password + " to be " + expected);
+    }
+
+
 }
