@@ -45,4 +45,13 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    // Mockito for unit tests
+    testImplementation("org.mockito:mockito-core:4.+")
+    testImplementation("org.mockito:mockito-inline:4.+")
+    // AndroidX Test core for ApplicationProvider
+    testImplementation("androidx.test:core:1.5.0")
+// JUnit
+    testImplementation("junit:junit:4.13.2")
 }

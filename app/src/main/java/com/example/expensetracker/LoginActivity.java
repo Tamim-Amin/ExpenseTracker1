@@ -12,18 +12,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.expensetracker.service.AuthService;
+import com.example.expensetracker.service.UserService;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivity";
 
-    private EditText etUsername, etPassword;
+    public EditText etUsername, etPassword;
     private Button btnLogin;
     private TextView tvRegister;
 
-    private FirebaseAuth mAuth;
+    private AuthService authService;
+    private UserService userService;
     private ProgressDialog progressDialog;
 
     @Override
@@ -31,15 +33,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         try {
-            // Initialize Firebase Auth first
-            mAuth = FirebaseAuth.getInstance();
-            Log.d(TAG, "Firebase Auth initialized successfully");
+            // Initialize service classes (can inject mocks in tests)
+            authService = new AuthService();
+            userService = new UserService();
 
             // Check if user is already logged in
-            FirebaseUser currentUser = mAuth.getCurrentUser();
+            FirebaseUser currentUser = authService.getCurrentUser();
             if (currentUser != null) {
                 Log.d(TAG, "User already logged in: " + currentUser.getEmail());
-                // User is already logged in, so skip login screen
                 navigateToMainActivity();
                 return;
             }
@@ -91,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     Intent intent = new Intent(this, RegisterActivity.class);
                     startActivity(intent);
-                    finish(); // Close login activity to prevent going back
+                    finish();
                 } catch (Exception e) {
                     Log.e(TAG, "Error navigating to register: " + e.getMessage(), e);
                     Toast.makeText(this, "Error opening registration", Toast.LENGTH_SHORT).show();
@@ -106,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void handleRegistrationSuccess() {
         try {
-            // Check if coming from successful registration
             Intent intent = getIntent();
             if (intent != null && intent.getBooleanExtra("registration_success", false)) {
                 String userEmail = intent.getStringExtra("user_email");
@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void loginUser() {
+    public void loginUser() {
         try {
             String email = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                 progressDialog.show();
             }
 
-            mAuth.signInWithEmailAndPassword(email, password)
+            authService.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         try {
                             if (progressDialog != null) {
@@ -144,11 +144,9 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "Login successful");
-                                // Successfully logged in, redirect to main screen
-                                FirebaseUser user = mAuth.getCurrentUser();
+                                FirebaseUser user = authService.getCurrentUser();
                                 if (user != null) {
-                                    Log.d(TAG, "User ID: " + user.getUid());
-                                    String welcomeName = user.getDisplayName() != null ? user.getDisplayName() : user.getEmail();
+                                    String welcomeName = userService.getDisplayName(user);
                                     Toast.makeText(this, "Welcome back, " + welcomeName + "!", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
@@ -156,7 +154,6 @@ public class LoginActivity extends AppCompatActivity {
                                 navigateToMainActivity();
                             } else {
                                 Log.e(TAG, "Login failed", task.getException());
-                                // Login failed
                                 handleLoginError(task.getException());
                             }
                         } catch (Exception e) {
@@ -172,6 +169,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Error during login: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
 
     private void handleLoginError(Exception exception) {
         String errorMessage = "Login failed. Please try again.";
@@ -200,11 +198,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean validateInput(String email, String password) {
         try {
-            // Clear previous errors
             etUsername.setError(null);
             etPassword.setError(null);
 
-            // Validate email
             if (email.isEmpty()) {
                 etUsername.setError("Please enter email");
                 etUsername.requestFocus();
@@ -217,7 +213,6 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
 
-            // Validate password
             if (password.isEmpty()) {
                 etPassword.setError("Please enter password");
                 etPassword.requestFocus();
@@ -253,14 +248,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         try {
-            // Check if the user is already signed in
-            if (mAuth != null) {
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-                if (currentUser != null) {
-                    Log.d(TAG, "User already signed in on start");
-                    // User is already signed in, so skip login screen
-                    navigateToMainActivity();
-                }
+            FirebaseUser currentUser = authService.getCurrentUser();
+            if (currentUser != null) {
+                Log.d(TAG, "User already signed in on start");
+                navigateToMainActivity();
             }
         } catch (Exception e) {
             Log.e(TAG, "Error in onStart: " + e.getMessage(), e);
@@ -271,7 +262,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            // Clear password field for security when returning to login
             if (etPassword != null) {
                 etPassword.setText("");
             }
@@ -292,4 +282,35 @@ public class LoginActivity extends AppCompatActivity {
             Log.e(TAG, "Error in onDestroy: " + e.getMessage(), e);
         }
     }
+    // New method
+    public void loginUser(String email, String password) {
+        if (!validateInput(email, password)) return;
+
+        progressDialog.show();
+
+        authService.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    progressDialog.dismiss();
+
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = authService.getCurrentUser();
+                        String name = userService.getDisplayName(user);
+                        Toast.makeText(this, "Welcome back, " + name + "!", Toast.LENGTH_SHORT).show();
+                        navigateToMainActivity();
+                    } else {
+                        handleLoginError(task.getException());
+                    }
+                });
+    }
+
+
+    // For test injection
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
 }
