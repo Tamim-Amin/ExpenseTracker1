@@ -26,9 +26,18 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    // ✅ Enable JUnit 5 for unit tests
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 }
 
@@ -42,22 +51,20 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
 
-    // JUnit 4 (keep existing)
+    // JUnit 4 (legacy)
     testImplementation(libs.junit)
 
-    // JUnit 5 (Jupiter) - For parameterized tests and modern assertions
+    // JUnit 5 (Jupiter)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.3")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.3")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.3")
 
-    // JUnit Vintage (to run JUnit 4 tests alongside JUnit 5)
-    testImplementation("org.junit.vintage:junit-vintage-engine:5.9.3")
+    // Vintage engine for running JUnit 4 alongside JUnit 5
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.3")
 
-    // Mockito - For mocking (corrected versions)
-    testImplementation("org.mockito:mockito-core:4.11.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
-    testImplementation("org.mockito:mockito-inline:4.11.0")
+    // Mockito
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.7.0")
 
     // Android testing
     androidTestImplementation(libs.ext.junit)
