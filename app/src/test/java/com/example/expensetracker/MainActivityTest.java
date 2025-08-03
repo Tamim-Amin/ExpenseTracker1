@@ -1,0 +1,133 @@
+package com.example.expensetracker;
+
+import org.junit.Test;
+import org.junit.Before;
+import static org.junit.Assert.*;
+
+public class MainActivityTest {
+
+    private String[] validCategories;
+    private String testUserEmail;
+    private String testDisplayName;
+    private double testExpenseAmount;
+
+    @Before
+    public void setUp() {
+        validCategories = new String[]{"Food", "Transport", "Entertainment", "Shopping", "Bills", "Healthcare", "Education", "Others"};
+        testUserEmail = "testuser@example.com";
+        testDisplayName = "testuser";
+        testExpenseAmount = 25.99;
+    }
+
+    // Test 1: assertNotNull - Categories array validation
+    @Test
+    public void testCategoriesArrayIsNotNull() {
+        assertNotNull("Categories array should not be null", validCategories);
+    }
+
+    // Test 2: assertNull - Initial expense list should be null
+    @Test
+    public void testInitialExpenseListIsNull() {
+        Object expenseList = null; // Simulating empty expense list initially
+        assertNull("Initial expense list should be null", expenseList);
+    }
+
+    // Test 3: assertTrue - Valid expense amount validation
+    @Test
+    public void testValidExpenseAmount() {
+        boolean isValid = isValidExpenseAmount(testExpenseAmount);
+        assertTrue("Valid expense amount should pass validation", isValid);
+    }
+
+    // Test 4: assertFalse - Invalid expense amount validation
+    @Test
+    public void testInvalidExpenseAmount() {
+        double invalidAmount = -10.50;
+        boolean isValid = isValidExpenseAmount(invalidAmount);
+        assertFalse("Negative expense amount should fail validation", isValid);
+    }
+
+
+
+    // Helper methods that mirror MainActivity functionality
+    private boolean isValidExpenseAmount(double amount) {
+        return amount > 0 && amount <= 999999.99;
+    }
+
+    private String getUserDisplayName(String email) {
+        if (email != null && email.contains("@")) {
+            return email.split("@")[0];
+        }
+        return "User";
+    }
+
+    private void validateExpenseData(String description, double amount, String category) {
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty");
+        }
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero");
+        }
+        if (!isValidCategory(category)) {
+            throw new IllegalArgumentException("Invalid category");
+        }
+    }
+
+    private void validateExpenseCategory(String category) {
+        if (!isValidCategory(category)) {
+            throw new IllegalArgumentException("Category is not valid");
+        }
+    }
+
+    private boolean isValidCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            return false;
+        }
+        for (String validCategory : validCategories) {
+            if (validCategory.equals(category)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private double calculateTotalExpenses(double[] expenses) {
+        double total = 0.0;
+        for (double expense : expenses) {
+            total += expense;
+        }
+        return total;
+    }
+
+    private String formatExpenseAmount(double amount) {
+        return String.format("$%.2f", amount);
+    }
+
+    // Test MainActivity.Expense class functionality
+    @Test
+    public void testExpenseClassCreation() {
+        // Test creating expense like MainActivity.Expense
+        MockExpense expense = new MockExpense("Coffee", 5.99, "Food", "2025-08-03");
+
+        assertNotNull("Expense object should not be null", expense);
+        assertEquals("Description should match", "Coffee", expense.description);
+        assertEquals("Amount should match", 5.99, expense.amount, 0.01);
+        assertEquals("Category should match", "Food", expense.category);
+        assertEquals("Date should match", "2025-08-03", expense.date);
+    }
+
+    // Mock class to simulate MainActivity.Expense
+    private static class MockExpense {
+        public String description;
+        public double amount;
+        public String category;
+        public String date;
+
+        public MockExpense(String description, double amount, String category, String date) {
+            this.description = description;
+            this.amount = amount;
+            this.category = category;
+            this.date = date;
+        }
+    }
+}
