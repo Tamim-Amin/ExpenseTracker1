@@ -1,5 +1,17 @@
 <resources>
     <string name="app_name">ExpenseTracker</string>
+    <string name="expensetracker">ExpenseTracker</string>
+    <string name="abc">💰</string>
+    <string name="track_your_expenses_with_ease">Track your expenses with ease</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="email">Email</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="password">Password</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
 
     <string-array name="expense_categories">
         <item>Food</item>
