@@ -81,6 +81,68 @@ public class LoginActivityTest {
         assertNotSame("Different string objects should not be same", email1, email2);
     }
 
+    // Test 9: Try-catch for null email validation
+    @Test
+    public void testNullEmailValidation() {
+        String nullEmail = null;
+        boolean exceptionCaught = false;
+
+        try {
+            validateLoginInput(nullEmail, validPassword);
+        } catch (IllegalArgumentException e) {
+            exceptionCaught = true;
+            assertNotNull("Exception should not be null", e);
+            assertTrue("Exception message should mention email",
+                    e.getMessage().contains("email"));
+        }
+
+        assertTrue("Exception should have been caught for null email", exceptionCaught);
+    }
+
+    // Test 10: Try-catch for empty password validation
+    @Test
+    public void testEmptyPasswordValidation() {
+        String emptyPassword = "";
+        boolean exceptionCaught = false;
+
+        try {
+            validateLoginInput(validEmail, emptyPassword);
+        } catch (IllegalArgumentException e) {
+            exceptionCaught = true;
+            assertNotNull("Exception should not be null", e);
+        }
+
+        assertTrue("Exception should have been caught for empty password", exceptionCaught);
+    }
+
+    // Test 11: Pattern matching for email validation (like LoginActivity uses)
+    @Test
+    public void testEmailPatternMatching() {
+        String validEmail = "user@example.com";
+        String invalidEmail = "user@invalid";
+
+        // Test pattern matching like in LoginActivity.validateInput()
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        boolean validResult = validEmail.matches(emailPattern);
+        boolean invalidResult = invalidEmail.matches(emailPattern);
+
+        assertTrue("Valid email should match pattern", validResult);
+        assertFalse("Invalid email should not match pattern", invalidResult);
+    }
+
+    // Test 12: Password length validation (like LoginActivity)
+    @Test
+    public void testPasswordLengthValidation() {
+        String validPassword = "password123";
+        String shortPassword = "123";
+
+        boolean validLength = isValidPasswordLength(validPassword);
+        boolean invalidLength = isValidPasswordLength(shortPassword);
+
+        assertTrue("Valid password should pass length check", validLength);
+        assertFalse("Short password should fail length check", invalidLength);
+    }
+
 
     // Helper methods that mirror LoginActivity functionality
     private boolean isValidEmail(String email) {
