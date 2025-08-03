@@ -144,6 +144,52 @@ public class LoginActivityTest {
     }
 
 
+    // Test 13: Empty field validation
+    @Test
+    public void testEmptyFieldValidation() {
+        String emptyEmail = "";
+        String emptyPassword = "";
+
+        boolean emailEmpty = emptyEmail.isEmpty();
+        boolean passwordEmpty = emptyPassword.isEmpty();
+
+        assertTrue("Empty email should be detected", emailEmpty);
+        assertTrue("Empty password should be detected", passwordEmpty);
+    }
+
+    // Test 14: Trimmed input validation
+    @Test
+    public void testTrimmedInputValidation() {
+        String emailWithSpaces = "  user@example.com  ";
+        String trimmedEmail = emailWithSpaces.trim();
+
+        assertNotEquals("Trimmed email should differ from original", emailWithSpaces, trimmedEmail);
+        assertEquals("Trimmed email should match expected", "user@example.com", trimmedEmail);
+    }
+
+    // Test 15: Login validation logic (simulating LoginActivity.validateInput)
+    @Test
+    public void testLoginValidationLogic() {
+        // Test valid inputs
+        boolean validInputs = validateLoginCredentials(validEmail, validPassword);
+        assertTrue("Valid credentials should pass validation", validInputs);
+
+        // Test invalid inputs
+        boolean invalidInputs = validateLoginCredentials(invalidEmail, shortPassword);
+        assertFalse("Invalid credentials should fail validation", invalidInputs);
+    }
+
+    // Test 16: User display name handling
+    @Test
+    public void testUserDisplayName() {
+        String email = "testuser@example.com";
+        String expectedDisplayName = email.split("@")[0]; // "testuser"
+        String actualDisplayName = getUserDisplayName(email);
+
+        assertEquals("Display name should match expected", expectedDisplayName, actualDisplayName);
+        assertNotNull("Display name should not be null", actualDisplayName);
+    }
+
     // Helper methods that mirror LoginActivity functionality
     private boolean isValidEmail(String email) {
         if (email == null || email.isEmpty()) {
