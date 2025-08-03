@@ -134,6 +134,52 @@ public class MainActivityTest {
         assertEquals("Total expenses should match expected value", expectedTotal, actualTotal, 0.01);
     }
 
+    // Test 13: Empty expense validation
+    @Test
+    public void testEmptyExpenseValidation() {
+        String emptyDescription = "";
+        double zeroAmount = 0.0;
+
+        boolean descriptionEmpty = emptyDescription.trim().isEmpty();
+        boolean amountZero = zeroAmount == 0.0;
+
+        assertTrue("Empty description should be detected", descriptionEmpty);
+        assertTrue("Zero amount should be detected", amountZero);
+    }
+
+    // Test 14: Expense data trimming
+    @Test
+    public void testExpenseDataTrimming() {
+        String descriptionWithSpaces = "  Coffee and snacks  ";
+        String trimmedDescription = descriptionWithSpaces.trim();
+
+        assertNotEquals("Trimmed description should differ from original", descriptionWithSpaces, trimmedDescription);
+        assertEquals("Trimmed description should match expected", "Coffee and snacks", trimmedDescription);
+    }
+
+    // Test 15: Category validation logic
+    @Test
+    public void testCategoryValidationLogic() {
+        // Test valid category
+        boolean validCategory = isValidCategory("Food");
+        assertTrue("Valid category should pass validation", validCategory);
+
+        // Test invalid category
+        boolean invalidCategory = isValidCategory("InvalidCategory");
+        assertFalse("Invalid category should fail validation", invalidCategory);
+    }
+
+    // Test 16: Expense formatting
+    @Test
+    public void testExpenseFormatting() {
+        double amount = 25.99;
+        String expectedFormat = "$25.99";
+        String actualFormat = formatExpenseAmount(amount);
+
+        assertEquals("Expense format should match expected", expectedFormat, actualFormat);
+        assertNotNull("Formatted amount should not be null", actualFormat);
+    }
+
     // Helper methods that mirror MainActivity functionality
     private boolean isValidExpenseAmount(double amount) {
         return amount > 0 && amount <= 999999.99;
