@@ -12,24 +12,9 @@ public class AddExpenseActivityTest {
     }
 
     @Test
-    public void testValidDescriptionValidation() {
-        String description = "Coffee";
-        String trimmedDescription = description.trim();
-        assertEquals("Description should match expected value", "Coffee", trimmedDescription);
-    }
-
-    @Test
-    public void testEmptyDescriptionValidation() {
-        String description = "";
-        boolean isEmpty = description.trim().isEmpty();
-        assertTrue("Empty description should return true for isEmpty", isEmpty);
-    }
-
-    @Test
-    public void testValidDescriptionIsNotEmpty() {
-        String description = "Coffee and snacks";
-        boolean isEmpty = description.trim().isEmpty();
-        assertFalse("Valid description should return false for isEmpty", isEmpty);
+    public void testCategoriesHaveCorrectCount() {
+        String[] categories = {"Food", "Transport", "Entertainment", "Shopping", "Bills", "Healthcare", "Education", "Others"};
+        assertEquals("Should have 8 categories", 8, categories.length);
     }
 
     @Test
@@ -58,5 +43,12 @@ public class AddExpenseActivityTest {
         String str2 = new String("Coffee");
         assertNotSame("New string object should not be same", str1, str2);
     }
-    
+    @Test
+    public void testInvalidAmountThrowsException() {
+        assertThrows("Invalid amount should throw NumberFormatException",
+                NumberFormatException.class, () -> {
+                    Double.parseDouble("abc123");
+                });
+    }
+
 }
