@@ -1,6 +1,7 @@
 [versions]
 agp = "8.11.1"
 junit = "4.13.2"
+junitJupiter = "5.10.0"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
@@ -9,9 +10,19 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 firebaseAuth = "23.2.1"
 firebaseDatabase = "21.0.0"
+mockito = "5.5.0"
+assertj = "3.24.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junitJupiter" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junitJupiter" }
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junitJupiter" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-junit-jupiter = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
+mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -23,4 +34,3 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-

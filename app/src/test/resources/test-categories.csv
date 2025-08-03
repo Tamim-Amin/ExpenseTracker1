@@ -1,0 +1,15 @@
+category,expected
+Food,true
+Transport,true
+Entertainment,true
+Shopping,true
+Bills,true
+Healthcare,true
+Education,true
+Others,true
+InvalidCategory,false
+,false
+"",false
+   ,false
+Gaming,false
+Sports,false
