@@ -79,6 +79,60 @@ public class MainActivityTest {
     }
 
 
+    // Test 9: Try-catch for invalid expense data
+    @Test
+    public void testInvalidExpenseDataException() {
+        String invalidDescription = null;
+        boolean exceptionCaught = false;
+
+        try {
+            validateExpenseData(invalidDescription, testExpenseAmount, "Food");
+        } catch (IllegalArgumentException e) {
+            exceptionCaught = true;
+            assertNotNull("Exception should not be null", e);
+            assertTrue("Exception message should mention Description",
+                    e.getMessage().contains("Description"));
+        }
+
+        assertTrue("Exception should have been caught for null description", exceptionCaught);
+    }
+
+    // Test 10: Try-catch for invalid category validation
+    @Test
+    public void testInvalidCategoryException() {
+        String invalidCategory = "InvalidCategory";
+        boolean exceptionCaught = false;
+
+        try {
+            validateExpenseCategory(invalidCategory);
+        } catch (IllegalArgumentException e) {
+            exceptionCaught = true;
+            assertNotNull("Exception should not be null", e);
+        }
+
+        assertTrue("Exception should have been caught for invalid category", exceptionCaught);
+    }
+
+    // Test 11: Pattern matching for email validation
+    @Test
+    public void testEmailPatternMatching() {
+        String validEmail = "user@example.com";
+        String invalidEmail = "invalid-email";
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+        assertTrue("Valid email should match pattern", validEmail.matches(emailPattern));
+        assertFalse("Invalid email should not match pattern", invalidEmail.matches(emailPattern));
+    }
+
+    // Test 12: Total expense calculation
+    @Test
+    public void testTotalExpenseCalculation() {
+        double[] expenses = {25.99, 15.50, 30.00};
+        double expectedTotal = 71.49;
+        double actualTotal = calculateTotalExpenses(expenses);
+
+        assertEquals("Total expenses should match expected value", expectedTotal, actualTotal, 0.01);
+    }
 
     // Helper methods that mirror MainActivity functionality
     private boolean isValidExpenseAmount(double amount) {
