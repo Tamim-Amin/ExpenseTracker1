@@ -5,15 +5,18 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Calendar;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class AddExpenseActivityTest {
-
 
     // -------------------- Assertion tests --------------------
     @Test
@@ -61,7 +64,6 @@ public class AddExpenseActivityTest {
                 "Invalid amount should throw NumberFormatException");
     }
 
-
     // -------------------- Parameterized tests --------------------
     @ParameterizedTest
     @ValueSource(strings = {"10.50", "25.99", "100.00", "999999.99", "0.01"})
@@ -97,6 +99,155 @@ public class AddExpenseActivityTest {
                 new Object[]{"2025-08-03", true, "Valid date format"},
                 new Object[]{"03-08-2025", false, "Invalid DD-MM-YYYY"}
         );
+    }
+
+    // -------------------- Mockito tests --------------------
+    @Mock
+    private ExpenseValidator mockExpenseValidator;
+
+    @Mock
+    private CategoryService mockCategoryService;
+
+    @Mock
+    private DateFormatter mockDateFormatter;
+
+    @Mock
+    private ExpenseRepository mockExpenseRepository;
+
+    @InjectMocks
+    private ExpenseManager expenseManager;
+
+    @BeforeAll
+    public void setUpMocks() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testMockExpenseValidator() {
+        String description = "Coffee";
+        when(mockExpenseValidator.validateDescription(description)).thenReturn(true);
+
+        boolean result = mockExpenseValidator.validateDescription(description);
+
+        assertTrue(result, "Mocked validator should return true");
+        verify(mockExpenseValidator).validateDescription(description);
+    }
+
+    @Test
+    public void testMockAmountValidation() {
+        String amount = "25.99";
+        when(mockExpenseValidator.validateAmount(amount)).thenReturn(true);
+
+        boolean result = mockExpenseValidator.validateAmount(amount);
+
+        assertTrue(result, "Valid amount should return true");
+        verify(mockExpenseValidator, times(1)).validateAmount(amount);
+    }
+
+    @Test
+    public void testExpenseManagerWithInjectMocks() {
+        String description = "Lunch";
+        String amount = "15.50";
+        String category = "Food";
+
+        when(mockExpenseValidator.validateDescription(description)).thenReturn(true);
+        when(mockExpenseValidator.validateAmount(amount)).thenReturn(true);
+        when(mockCategoryService.isValidCategory(category)).thenReturn(true);
+
+        boolean result = expenseManager.validateExpense(description, amount, category);
+
+        assertTrue(result, "Expense manager should validate successfully");
+        verify(mockExpenseValidator).validateDescription(description);
+        verify(mockExpenseValidator).validateAmount(amount);
+        verify(mockCategoryService).isValidCategory(category);
+    }
+
+    @Test
+    public void testVerifyMethodCalls() {
+        String category = "Transport";
+        when(mockCategoryService.isValidCategory(category)).thenReturn(true);
+
+        mockCategoryService.isValidCategory(category);
+        mockCategoryService.isValidCategory(category);
+
+        verify(mockCategoryService, times(2)).isValidCategory(category);
+        verify(mockCategoryService, never()).isValidCategory("InvalidCategory");
+    }
+
+    @Test
+    public void testWhenThenReturnBehavior() {
+        when(mockExpenseValidator.validateAmount("25.99")).thenReturn(true);
+        when(mockExpenseValidator.validateAmount("invalid")).thenReturn(false);
+        when(mockExpenseValidator.validateAmount("0")).thenReturn(false);
+        when(mockExpenseValidator.validateDescription(anyString())).thenReturn(true);
+
+        assertTrue(mockExpenseValidator.validateAmount("25.99"));
+        assertFalse(mockExpenseValidator.validateAmount("invalid"));
+        assertFalse(mockExpenseValidator.validateAmount("0"));
+        assertTrue(mockExpenseValidator.validateDescription("Coffee"));
+    }
+
+    @Test
+    public void testBeforeSetup() {
+        assertNotNull(mockExpenseValidator);
+        assertNotNull(mockCategoryService);
+        assertNotNull(mockDateFormatter);
+        assertNotNull(mockExpenseRepository);
+        assertNotNull(expenseManager);
+    }
+
+    @Test
+    public void testMockDateFormatter() {
+        Calendar testDate = Calendar.getInstance();
+        String expectedDate = "2025-08-03";
+        when(mockDateFormatter.formatDate(any(Calendar.class))).thenReturn(expectedDate);
+
+        String formattedDate = mockDateFormatter.formatDate(testDate);
+
+        assertEquals(expectedDate, formattedDate);
+        verify(mockDateFormatter).formatDate(testDate);
+    }
+
+    @Test
+    public void testMockExpenseRepository() {
+        MockExpense expense = new MockExpense("Coffee", 5.99, "Food", "2025-08-03");
+        when(mockExpenseRepository.saveExpense(any(MockExpense.class))).thenReturn(true);
+        when(mockExpenseRepository.getExpenseCount()).thenReturn(5);
+
+        boolean saved = mockExpenseRepository.saveExpense(expense);
+        int count = mockExpenseRepository.getExpenseCount();
+
+        assertTrue(saved);
+        assertEquals(5, count);
+    }
+
+    @Test
+    public void testComplexMockInteraction() {
+        String description = "Grocery shopping";
+        String amount = "75.50";
+        String category = "Shopping";
+        String date = "2025-08-03";
+
+        when(mockExpenseValidator.validateDescription(description)).thenReturn(true);
+        when(mockExpenseValidator.validateAmount(amount)).thenReturn(true);
+        when(mockCategoryService.isValidCategory(category)).thenReturn(true);
+        when(mockDateFormatter.formatDate(any(Calendar.class))).thenReturn(date);
+        when(mockExpenseRepository.saveExpense(any(MockExpense.class))).thenReturn(true);
+
+        boolean isValid = expenseManager.addExpense(description, amount, category);
+
+        assertTrue(isValid);
+        verify(mockExpenseRepository).saveExpense(any(MockExpense.class));
+    }
+
+    @Test
+    public void testMockThrowsException() {
+        String invalidDescription = "";
+        when(mockExpenseValidator.validateDescription(invalidDescription))
+                .thenThrow(new IllegalArgumentException("Description cannot be empty"));
+
+        assertThrows(IllegalArgumentException.class, () ->
+                mockExpenseValidator.validateDescription(invalidDescription));
     }
 
     // -------------------- Helper methods and classes --------------------
