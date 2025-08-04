@@ -291,4 +291,31 @@ public class LoginActivity extends AppCompatActivity {
             Log.e(TAG, "Error in onDestroy: " + e.getMessage(), e);
         }
     }
+
+    public static boolean isValidInput(String email, String password) {
+        if (email == null || password == null) return false;
+        if (email.isEmpty()) return false;
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) return false;
+        if (password.isEmpty()) return false;
+        if (password.length() < 6) return false;
+        return true;
+    }
+
+    public static String getLoginErrorMessage(String firebaseError) {
+        if (firebaseError == null) return "Login failed. Please try again.";
+        if (firebaseError.contains("no user record")) {
+            return "No account found with this email. Please register first.";
+        } else if (firebaseError.contains("wrong-password") || firebaseError.contains("invalid-credential")) {
+            return "Incorrect password. Please try again.";
+        } else if (firebaseError.contains("invalid-email")) {
+            return "Invalid email format. Please check and try again.";
+        } else if (firebaseError.contains("user-disabled")) {
+            return "Your account has been disabled. Please contact support.";
+        } else if (firebaseError.contains("too-many-requests")) {
+            return "Too many failed attempts. Please try again later.";
+        } else {
+            return "Login failed: " + firebaseError;
+        }
+    }
+
 }
