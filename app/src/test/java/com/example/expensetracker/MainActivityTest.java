@@ -2,7 +2,13 @@ package com.example.expensetracker;
 
 import org.junit.Test;
 import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivityTest {
 
@@ -17,6 +23,7 @@ public class MainActivityTest {
         testUserEmail = "testuser@example.com";
         testDisplayName = "testuser";
         testExpenseAmount = 25.99;
+        //mainActivity = new MainActivity();
     }
 
     // Test 1: assertNotNull - Categories array validation
@@ -260,5 +267,28 @@ public class MainActivityTest {
             this.category = category;
             this.date = date;
         }
+    }
+
+
+    @Mock
+    FirebaseUser mockUser;
+
+    @Test
+    public void testGetUserDisplayName_WithDisplayName() {
+        when(mockUser.getDisplayName()).thenReturn("sadiah");
+        when(mockUser.getEmail()).thenReturn("sadiah@example.com");
+
+        String result = MainActivity.getUserDisplayName(mockUser);
+        assertEquals("sadiah", result);
+    }
+
+
+    @Test
+    public void testGetUserDisplayName_WithNoDisplayNameOrEmail() {
+        when(mockUser.getDisplayName()).thenReturn(null);
+        when(mockUser.getEmail()).thenReturn(null);
+
+        String result = MainActivity.getUserDisplayName(mockUser);
+        assertEquals("User", result);
     }
 }

@@ -62,4 +62,10 @@ dependencies {
     // Android testing
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // For unit testing
+    testImplementation("junit:junit:4.13.2")
+// Mockito for mocking
+    testImplementation("org.mockito:mockito-core:5.11.0")
+
 }
