@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         loadUserExpensesFromFirebase();
     }
 
-    private String getUserDisplayName(FirebaseUser user) {
+    public static String getUserDisplayName(FirebaseUser user) {
         if (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
             return user.getDisplayName();
         } else if (user.getEmail() != null) {
@@ -285,4 +285,17 @@ public class MainActivity extends AppCompatActivity {
             navigateToLogin();
         }
     }
+    public static int getCategoryColor(String category) {
+        switch (category.toLowerCase()) {
+            case "food": return 0xFF10B981;
+            case "transport": return 0xFF3B82F6;
+            case "entertainment": return 0xFFEF4444;
+            case "shopping": return 0xFFF59E0B;
+            case "bills": return 0xFF8B5CF6;
+            case "healthcare": return 0xFFEC4899;
+            case "education": return 0xFF06B6D4;
+            default: return 0xFF6B7280;
+        }
+    }
+
 }
